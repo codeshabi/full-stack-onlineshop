@@ -1,0 +1,124 @@
+
+<%- include('layout') %>
+
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold text-center">All Products</h1>
+            <p class="lead text-muted text-center">Browse our complete collection</p>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form action="/products" method="GET" class="row g-3">
+                        <!-- Search -->
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-control" name="search" 
+                                   value="<%= typeof currentSearch === 'string' ? currentSearch.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') : '' %>" placeholder="Search products...">
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="col-md-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category">
+                                <option value="all" <%= currentCategory === 'all' ? 'selected' : '' %>>All Categories</option>
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" <%= currentCategory === category ? 'selected' : '' %>>
+                                        <%= category.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        
+                        <!-- Sort -->
+                        <div class="col-md-3">
+                            <label class="form-label">Sort By</label>
+                            <select class="form-select" name="sort">
+                                <option value="newest" <%= currentsort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                                <option value="price_low" <%= currentsort === 'price_low' ? 'selected' : '' %>>Price: Low to High</option>
+                                <option value="price_high" <%= currentsort === 'price_high' ? 'selected' : '' %>>Price: High to Low</option>
+                                <option value="name" <%= currentsort === 'name' ? 'selected' : '' %>></option>
+                            </select>
+                        </div>
+                        
+                        <!-- Filter Button -->
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-2"></i>Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Info -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <p class="text-muted">
+                <strong><%= products.length %></strong> products found
+                <% if (searchQuery) { %>
+                    for "<%= typeof searchQuery === 'string' ? searchQuery.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') : '' %>"
+                <% } %>
+                <% if (currentCategory !== 'all') { %>
+                    in <%= currentCategory.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>
+                <% } %>
+            </p>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row">
+        <% if (products.length === 0) { %>
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                <h3>No products found</h3>
+                <p class="text-muted">Try adjusting your search criteria</p>
+                <a href="/products" class="btn btn-primary">View All Products</a>
+            </div>
+        <% } else { %>
+            <% products.forEach(product => { %>
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 hover-card">
+                        <div class="position-relative">
+                            <img src="<%= product.image.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" class="card-img-top product-image" alt="<%= product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>">
+                            <% if (product.stock <= 5) { %>
+                                <span class="badge bg-warning position-absolute top-0 end-0 m-2">
+                                    <% if (product.stock === 0) { %>
+                                        Out of Stock
+                                    <% } else { %>
+                                        Only <%= product.stock %> left
+                                    <% } %>
+                                </span>
+                            <% } %>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title"><%= product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                <%= product.description.length > 80 ? product.description.substring(0, 80).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') + '...' : product.description.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-secondary"><%= product.category.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></span>
+                                <h5 class="text-primary mb-0">$<%= product.price.toLocaleString() %></h5>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="/products/<%= product._id.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" class="btn btn-primary w-100">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</div>
+
+<%- include('footer') %>

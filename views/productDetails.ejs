@@ -1,0 +1,111 @@
+
+<%- include('layout') %>
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/products">Products</a></li>
+            <li class="breadcrumb-item active"><%= product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></li>
+        </ol>
+    </nav>
+
+    <!-- Product Details -->
+    <div class="row mb-5">
+        <div class="col-lg-6 mb-4">
+            <div class="product-image-container">
+                <img src="<%= product.image.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" class="img-fluid rounded shadow" alt="<%= product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>">
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="product-info">
+                <span class="badge bg-primary mb-2"><%= product.category.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></span>
+                <h1 class="display-5 fw-bold mb-3"><%= product.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></h1>
+                <h2 class="text-primary mb-4">$<%= product.price.toLocaleString() %></h2>
+                
+                <!-- Stock Status -->
+                <div class="mb-4">
+                    <% if (product.stock > 10) { %>
+                        <span class="badge bg-success fs-6">
+                            <i class="fas fa-check-circle me-2"></i>In Stock (<%= product.stock %> available)
+                        </span>
+                    <% } else if (product.stock > 0) { %>
+                        <span class="badge bg-warning fs-6">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Low Stock (<%= product.stock %> left)
+                        </span>
+                    <% } else { %>
+                        <span class="badge bg-danger fs-6">
+                            <i class="fas fa-times-circle me-2"></i>Out of Stock
+                        </span>
+                    <% } %>
+                </div>
+                
+                <!-- Description -->
+                <div class="mb-4">
+                    <h4>Description</h4>
+                    <p class="lead"><%= product.description.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></p>
+                </div>
+                
+                <!-- Product Features -->
+                <div class="mb-4">
+                    <h5>Product Features:</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>High Quality Materials</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Fast & Free Shipping</li>
+                        <li><i class="fas fa-check text-success me-2"></i>30-Day Return Policy</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 Year Warranty</li>
+                    </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex">
+                    <% if (product.stock > 0) { %>
+                        <button class="btn btn-primary btn-lg flex-md-fill">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                        <button class="btn btn-success btn-lg flex-md-fill">
+                            <i class="fas fa-bolt me-2"></i>Buy Now
+                        </button>
+                    <% } else { %>
+                        <button class="btn btn-secondary btn-lg flex-md-fill" disabled>
+                            <i class="fas fa-times me-2"></i>Out of Stock
+                        </button>
+                    <% } %>
+                    <button class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <% if (relatedProducts.length > 0) { %>
+        <section class="related-products">
+            <h3 class="mb-4">Related Products</h3>
+            <div class="row">
+                <% relatedProducts.forEach(related => { %>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100 hover-card">
+                            <img src="<%= related.image.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" class="card-img-top product-image" alt="<%= related.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>">
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title"><%= related.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %></h6>
+                                <p class="card-text text-muted small flex-grow-1">
+                                    <%= related.description.substring(0, 60).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>...
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary mb-0">$<%= related.price %></h6>
+                                    <a href="/products/<%= related._id.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;') %>" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+    <% } %>
+</div>
+
+<%- include('footer') %>
