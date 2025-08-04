@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const methodOverride = require('method-override');
+const authRoutes = require('./routes/auth.js'); // Adjust the path as necessary
 const mongoose = require('mongoose');   
 const sampleDataProduct = require('./utils/sampleDataPopulation.js');
 const Product = require('./models/product.models.js'); // Adjust the path as necessary
@@ -153,7 +154,7 @@ app.get('/api/categories', async (req, res) => {
     }
 });
 
-app.get('/api/register', (req, res) => {
+app.get('/api/register', authRoutes , (req, res) => {
     res.render('register', { title: 'Register' });
 });
 
